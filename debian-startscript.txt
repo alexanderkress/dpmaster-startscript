@@ -1,0 +1,61 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          dpmaster
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: dpmaster initscript
+# Description:       Starts/Stops/Restarts the dpmaster service
+### END INIT INFO
+
+set -e
+
+# Get LSB functions
+. /lib/lsb/init-functions
+
+USER=q3master
+GROUP=q3master
+
+DAEMON=/opt/q3master/dpmaster
+OPTIONS="--port 27900 --log --log-file /opt/q3master/log/dpmaster.log --verbose 2 --game-policy accept Quake3Arena --daemon --flood-protection --fp-decay-time 2 -u q3master -j /opt/q3master"
+
+
+# Exit if the package is not installed
+test -x $DAEMON || exit 0
+
+case "$1" in
+    start)
+        log_begin_msg "Starting..."
+        umask 002
+        if start-stop-daemon --start --quiet --background --chuid $USER:$GROUP --exec $DAEMON -- $OPTIONS; then
+            log_end_msg 0
+        else
+            log_end_msg $?
+        fi
+        ;;
+
+    stop)
+        log_begin_msg "Stopping..."
+        if start-stop-daemon --stop --quiet --oknodo --exec $DAEMON; then
+                log_end_msg 0
+        else
+                log_end_msg $?
+        fi
+        ;;
+
+    restart)
+        log_begin_msg "Restarting..."
+        start-stop-daemon --stop --quiet --oknodo --exec $DAEMON
+        sleep 3
+        start-stop-daemon --start --quiet --background --chuid $USER:$GROUP --exec $DAEMON -- $OPTIONS
+        log_end_msg $?
+        ;;
+
+    *)
+        echo "Usage: /etc/init.d/dpmaster {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

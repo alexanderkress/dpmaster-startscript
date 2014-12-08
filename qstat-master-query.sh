@@ -1,0 +1,1 @@
+quakestat -q3m master.urbanterror.info -ne

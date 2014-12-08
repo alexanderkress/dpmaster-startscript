@@ -1,0 +1,1 @@
+./dpmaster --port 27950 --log --log-file /opt/q3master/log/dpmaster.log --verbose 2 --game-policy accept Quake3Arena --daemon --flood-protection --fp-decay-time 2 -u q3master -j /opt/q3master
